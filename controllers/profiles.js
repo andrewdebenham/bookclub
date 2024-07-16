@@ -3,11 +3,19 @@ const router = express.Router();
 const User = require('../models/user');
 const verifyToken = require('../middleware/verify-token');
 
+// index (get all users)
+router.get('/', verifyToken, async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.mesage });
+    }
+});
+
+// get user profile
 router.get('/:userId', verifyToken, async (req, res) => {
     try {
-        if (req.user._id !== req.params.userId){
-            return res.status(401).json({ error: "Unauthorized"})
-        }
         const user = await User.findById(req.user._id);
         if (!user) {
             res.status(404)
