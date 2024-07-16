@@ -43,6 +43,22 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// Get reviews by userId
+router.get('/user/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const reviews = await Review.find({author: userId}).populate('author');
+
+        if (!reviews) {
+            return res.status(404).json({message: 'No reviews found for this user.'});
+        }
+        res.json(reviews);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error.message)
+    }
+});
+
 // Update
 router.put('/:id', async (req, res) => {
     try {
