@@ -9,6 +9,17 @@ const router = express.Router();
 // Protected Routes
 router.use(verifyToken);
 
+// Index
+router.get('/', async (req, res) => {
+    try {
+        const reviews = await Review.find().populate('author');
+        res.json(reviews);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error.message);
+    }
+});
+
 // Create
 router.post('/', async (req, res) => {
     try {
