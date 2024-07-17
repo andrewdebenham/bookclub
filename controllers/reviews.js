@@ -108,4 +108,25 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+
+// comment create 
+router.post('/:reviewId/comments', async (req, res) => {
+    try {
+        const review = await Review.findById(req.params.reviewId);
+        review.comments.push({...req.body, author: req.user._id});
+        await review.save();
+
+        await review.populate({
+            path: 'comments',
+            populate: 'author'
+        });
+        const comment = review.comments.pop();
+        
+        res.status(201).json(comment);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error.message);
+    }
+});
+
 module.exports = router;
