@@ -129,4 +129,52 @@ router.post('/:reviewId/comments', async (req, res) => {
     }
 });
 
+// Update comment
+router.put('/:reviewId/comments/:commentId', async (req, res) => {
+    try {
+        const review = await Review.findById(req.params.reviewId);
+        const comment = review.comments.id(req.params.commentId);
+
+        if (!comment.author.equals(req.user._id)) {
+            return res.status(403).json('You are not permitted to modify this comment');
+        }
+
+        comment.text = req.body.text;
+        await review.save();
+
+        await review.populate({
+            path: 'comments',
+            populate: 'author'
+        });
+
+        res.json(comment);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error.message);
+    }
+});
+
+// Delete comment
+router.delete('/:reviewId/comments/:commentId', async (req, res) => {
+    try {
+        const review = await Review.findById(req.params.reviewId);
+        const comment = review.comments.id(req.params.commentId);
+
+        if (!comment.author.equals(req.user._id)) {
+            return res.status(403).json('You are not permitted to delete this comment');
+        }
+
+        await comment.deleteOne();
+        await review.save();
+     
+        res.json(comment);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error.message);
+    }
+});
+
 module.exports = router;
+
+// comment.remove();
+// await review.save();
