@@ -12,7 +12,7 @@ router.use(verifyToken);
 // Index
 router.get('/', async (req, res) => {
     try {
-        const reviews = await Review.find().populate('author');
+        const reviews = await Review.find().populate('author'); //populate the comments authors
         res.json(reviews);
     } catch (error) {
         console.log(error);
@@ -148,6 +148,7 @@ router.put('/:reviewId/comments/:commentId', async (req, res) => {
         });
 
         res.json(comment);
+        console.log(req.user._id);
     } catch (error) {
         console.log(error);
         res.status(500).json(error.message);
