@@ -12,7 +12,7 @@ router.use(verifyToken);
 // Index
 router.get('/', async (req, res) => {
     try {
-        const reviews = await Review.find().populate('author'); //populate the comments authors
+        const reviews = await Review.find().populate('author'); //populate the comments
         res.json(reviews);
     } catch (error) {
         console.log(error);
@@ -176,6 +176,3 @@ router.delete('/:reviewId/comments/:commentId', async (req, res) => {
 });
 
 module.exports = router;
-
-// comment.remove();
-// await review.save();
